@@ -27,25 +27,26 @@ const RandomBlock = styled.div`
 `
 
 export default class RandomChar extends Component {
-	
-	constructor() {
-		super();
-		this.updateChar();
-	}
 
 	gotService = new gotService();
 	state = {
 		char: {},
 		loading: true,
-		errorMsg: ''
+		errorMsg: '',
+		error: false    
+	}
+
+	componentDidMount () {
+		this.updateChar();
+		this.timeId = setInterval(this.updateChar, 5000);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.timeId);
 	}
 
 	onCharLoaded = (char) => {
 
-		for (let key in char) {
-			if (char[key] == '') char[key] = 'нет данных';
-		}	
-		
 		this.setState({
 			char,
 			loading: false,
@@ -64,20 +65,17 @@ export default class RandomChar extends Component {
 
 	updateChar = () => {
 		const id = Math.floor(Math.random()*140 + 25);
-		// const id = 100000;		
+			
 		this.gotService.getCharacter(id)
 			.then(this.onCharLoaded)
 			.catch(this.onError);
 	}
 
 	render(){
-		// console.log(this);
 		const { char, loading, error, errorMsg } = this.state;
-		// console.log(this.state);
 		const errorMessage = error ? <ErrorMessage errorMsg={errorMsg}/> : null;
 		const spinner = loading ? <Spinner/> : null;
 		const content = !(loading || error) ? <View char={char}/> : null;
-		// const spinner = <Spinner/>;
 		return (
 			<RandomBlock>
 				{errorMessage}

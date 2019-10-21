@@ -13,13 +13,18 @@ export default class GotService {
   }
 
   getAllCharacters = async () => {
-    const res = await this.getResource(`/characters?page=5&pageSize=10`);
+    const page = 14;
+    const res = await this.getResource(`/characters?page=${page}&pageSize=10`);
+    for (let key in res) {
+      res[key]['id'] = +((page - 1) * 10 + (+key) + 1);
+		}
     return res.map(this._transformCharacrer);
   }
 
   getCharacter = async (id) => {
     const character = await this.getResource(`/characters/${id}`);
-    console.log(this._transformCharacrer(character));
+    character['id'] = id;
+    
     return this._transformCharacrer(character);
   } 
 
@@ -40,7 +45,12 @@ export default class GotService {
   } 
 
   _transformCharacrer = (char) => {
+    
+		for (let key in char) {
+			if (char[key] == '') char[key] = 'нет данных';
+		}	
     return {
+      id: char.id,
       name: char.name,
       gender: char.gender,
       born: char.born,

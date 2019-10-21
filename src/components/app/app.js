@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
-import ItemList from '../itemList';
-import CharDetails from '../charDetails';
+
+
 import styled from 'styled-components';
+import ErrorMessage from '../errorMessage';
+import CharacterPage from '../characterPage';
 
 const BoxInBtn = styled.div`
 	width: 100%;
@@ -21,7 +23,14 @@ const BoxInBtn = styled.div`
 export default class App extends Component {
 
 	state = {
-		char: false
+		char: true,
+		error: false
+	}
+
+	componentDidCatch() {
+		this.setState({
+			error: true
+		})
 	}
 
 	viewCard = () => {
@@ -30,11 +39,16 @@ export default class App extends Component {
 		});
 	}
 
+
   render() {
 
 		const {char} = this.state;
 
 		const viewChar = char ? <RandomChar/> : null;
+
+		if (this.state.error) {
+			return <ErrorMessage/>
+		}
 
 		return (
 			<> 
@@ -48,14 +62,7 @@ export default class App extends Component {
 							{viewChar}
 						</Col>
 					</Row>
-					<Row>
-						<Col md='6'>
-							<ItemList />
-						</Col>
-						<Col md='6'>
-							<CharDetails />
-						</Col>
-					</Row>
+					<CharacterPage/>
 				</Container>
 			</>
 		);
