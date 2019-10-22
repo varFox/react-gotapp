@@ -1,5 +1,6 @@
 
 export default class GotService {
+  
   _apiBase = 'https://anapioficeandfire.com/api';
 
   getResource = async (url) => {
@@ -16,38 +17,53 @@ export default class GotService {
     const page = 14;
     const res = await this.getResource(`/characters?page=${page}&pageSize=10`);
     for (let key in res) {
-      res[key]['id'] = +((page - 1) * 10 + (+key) + 1);
-		}
+      res[key]['id'] = ((page - 1) * 10 + (+key) + 1);
+    }
+    
     return res.map(this._transformCharacrer);
   }
 
   getCharacter = async (id) => {
-    const character = await this.getResource(`/characters/${id}`);
-    character['id'] = id;
+    const res = await this.getResource(`/characters/${id}`);
+    res['id'] = id;
     
-    return this._transformCharacrer(character);
+    return this._transformCharacrer(res);
   } 
 
-  getAllHouses = () => {
-    return this.getResource(`/houses`);
+  getAllHouses = async () => {
+    const res = await this.getResource(`/houses`);
+    for (let key in res) {
+      res[key]['id'] = +key + 1;
+    }
+    return res.map(this._transformHouse);
   }
 
-  getHouse = (id) => {
-    return this.getResource(`/houses/${id}`);
+  getHouse = async (id) => {
+    const res = await this.getResource(`/houses/${id}`);
+    res['id'] = id;
+    return this._transformHouse(res);
   }
 
-  getAllBooks = () => {
-    return this.getResource(`/books`);
+  getAllBooks = async () => {
+    const res = await this.getResource(`/books`);
+    for (let key in res) {
+      res[key]['id'] = +key + 1;
+    }
+    
+    return res.map(this._transformBook);
   }
   
-  getBook = (id) => {
-    return this.getResource(`/books/${id}`);
+  getBook = async (id) => {
+    const res = await this.getResource(`/books/${id}`);
+    res['id'] = id;
+    
+    return this._transformBook(res);
   } 
 
   _transformCharacrer = (char) => {
     
 		for (let key in char) {
-			if (char[key] == '') char[key] = 'нет данных';
+			if (char[key] === '') char[key] = 'нет данных';
 		}	
     return {
       id: char.id,
@@ -59,10 +75,16 @@ export default class GotService {
     }
   }
   _transformHouse = (house) => {
+    
+		for (let key in house) {
+      if (house[key] == 0) house[key] = 'нет данных';
+    }	
+    
     return {
+      id: house.id,
       name: house.name,
       region: house.region,
-      worlds: house.worlds,
+      words: house.words,
       titles: house.titles,
       overlord: house.overlord,
       ancestralWeapons: house.ancestralWeapons
@@ -70,10 +92,16 @@ export default class GotService {
   }
 
   _transformBook = (book) => {
+
+		for (let key in book) {
+      if (book[key] === '') book[key] = 'нет данных';
+      
+		}	
     return {
+      id: book.id,
       name: book.name,
       numberOfPages: book.numberOfPages,
-      publiser: book.publiser,
+      publisher: book.publisher,
       released: book.released
     }
   }

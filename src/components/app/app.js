@@ -2,11 +2,14 @@ import React, {Component} from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
-
-
 import styled from 'styled-components';
 import ErrorMessage from '../errorMessage';
-import CharacterPage from '../characterPage';
+import CharacterPage from '../pages/characterPage';
+import HousesPage from '../pages/housesPage';
+import BooksPage from '../pages/booksPage';
+import ItemList from '../itemList';
+import ItemDetails from '../itemDetails';
+import gotService from '../../services/gotService';
 
 const BoxInBtn = styled.div`
 	width: 100%;
@@ -21,6 +24,8 @@ const BoxInBtn = styled.div`
 	}
 `
 export default class App extends Component {
+
+	gotService = new gotService();
 
 	state = {
 		char: true,
@@ -63,6 +68,30 @@ export default class App extends Component {
 						</Col>
 					</Row>
 					<CharacterPage/>
+					<HousesPage/>
+					<BooksPage/>
+					{/* <Row>
+						<Col md='6'>
+							<ItemList 
+								onItemSelected={this.onItemSelected}
+								getData={this.gotService.getAllBooks}
+								renderItem={(item) => item.name}/>
+						</Col>
+						<Col md='6'>
+							<ItemDetails charId={this.state.selectedChar}/>
+						</Col>
+					</Row> */}
+					{/* <Row>
+						<Col md='6'>
+							<ItemList 
+								onItemSelected={this.onItemSelected}
+								getData={this.gotService.getAllHouses}
+								renderItem={(item) => item.name}/>
+						</Col>
+						<Col md='6'>
+							<ItemDetails charId={this.state.selectedChar}/>
+						</Col>
+					</Row> */}
 				</Container>
 			</>
 		);

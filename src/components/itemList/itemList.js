@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import styled from 'styled-components';
-import gotService from '../../services/gotService';
 import Spinner from '../spinner';
 
 
@@ -10,28 +9,31 @@ const LGroupItem = styled(ListGroupItem)`
 `
 export default class ItemList extends Component {
 
-  gotService = new gotService();
-
   state = {
-    charList: null
+    itemList: null
   }
 
   componentDidMount() {
-    this.gotService.getAllCharacters()
-      .then((charList) => {
+    const {getData} = this.props;
+    getData()
+      .then((itemList) => {
         this.setState({
-          charList
+          itemList
         });
       });
   }
 
   renderItems(arr) {
+    
     return arr.map((item) => {
+      const {id} = item;
+      const label = this.props.renderItem(item);
+
       return (
         <LGroupItem 
-          key={item.id}
-          onClick={() => this.props.onCharSelected(item.id)}>
-          {item.name}
+          key={id}
+          onClick={() => this.props.onItemSelected(id)}>
+          {label}
         </LGroupItem>
       )
     })
@@ -39,13 +41,13 @@ export default class ItemList extends Component {
 
   render() {
 
-    const {charList} = this.state;
+    const {itemList} = this.state;
 
-    if(!charList) {
+    if(!itemList) {
       return <Spinner/>
     }
 
-    const items = this.renderItems(charList);
+    const items = this.renderItems(itemList);
 
     return (
       <ListGroup>
