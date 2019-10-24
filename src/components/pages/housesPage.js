@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import ItemList from '../../itemList';
-import ItemDetails, {Field} from '../../itemDetails';
-import ErrorMessage from '../../errorMessage';
-import gotService from '../../../services/gotService';
-import RowBlock from '../../rowBlock';
+import ItemList from '../itemList';
+import ItemDetails, {Field} from '../itemDetails';
+import ErrorMessage from '../errorMessage';
+import gotService from '../../services/gotService';
+import RowBlock from '../rowBlock';
 
 export default class HousesPage extends Component {
 
   gotService = new gotService();
 
   state = {
-    selectedItem: null,
+    selectedItem: 3,
     error: false
   }
 

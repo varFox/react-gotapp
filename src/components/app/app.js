@@ -4,12 +4,9 @@ import Header from '../header';
 import RandomChar from '../randomChar';
 import styled from 'styled-components';
 import ErrorMessage from '../errorMessage';
-import CharacterPage from '../pages/characterPage';
-import HousesPage from '../pages/housesPage';
-import BooksPage from '../pages/booksPage';
-import ItemList from '../itemList';
-import ItemDetails from '../itemDetails';
+import {CharacterPage, HousesPage, BooksPage, BooksItem} from '../pages';
 import gotService from '../../services/gotService';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 const BoxInBtn = styled.div`
 	width: 100%;
@@ -56,44 +53,31 @@ export default class App extends Component {
 		}
 
 		return (
-			<> 
-				<Container>
-					<Header />
-				</Container>
-				<Container>
-					<Row>
-						<Col lg={{size: 5, offset: 0}}>
-						<BoxInBtn><button onClick={this.viewCard}>Показать рандомного персонажа</button></BoxInBtn>
-							{viewChar}
-						</Col>
-					</Row>
-					<CharacterPage/>
-					<HousesPage/>
-					<BooksPage/>
-					{/* <Row>
-						<Col md='6'>
-							<ItemList 
-								onItemSelected={this.onItemSelected}
-								getData={this.gotService.getAllBooks}
-								renderItem={(item) => item.name}/>
-						</Col>
-						<Col md='6'>
-							<ItemDetails charId={this.state.selectedChar}/>
-						</Col>
-					</Row> */}
-					{/* <Row>
-						<Col md='6'>
-							<ItemList 
-								onItemSelected={this.onItemSelected}
-								getData={this.gotService.getAllHouses}
-								renderItem={(item) => item.name}/>
-						</Col>
-						<Col md='6'>
-							<ItemDetails charId={this.state.selectedChar}/>
-						</Col>
-					</Row> */}
-				</Container>
-			</>
+			<Router>
+				<div> 
+					<Container>
+						<Header />
+					</Container>
+					<Container>
+						<Row>
+							<Col lg={{size: 5, offset: 0}}>
+							<BoxInBtn><button onClick={this.viewCard}>Показать рандомного персонажа</button></BoxInBtn>
+								{viewChar}
+							</Col>
+						</Row>
+
+						<Route path='/characters' component={CharacterPage}/>
+						<Route path='/houses' component={HousesPage}/>
+						<Route path='/books' exact component={BooksPage}/>
+						<Route path='/books/:id' render={
+							({match}) => {
+								const {id} = match.params;
+								return <BooksItem bookId={id}/>
+							} 
+						}/>
+					</Container>
+				</div>
+			</Router>
 		);
 	}
     

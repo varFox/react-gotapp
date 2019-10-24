@@ -84,7 +84,6 @@ export default class ItemDetails extends Component {
 
   updateItem = () => {
     const {getItems} = this.props;
-    
     if (!getItems) {
       return
     }
