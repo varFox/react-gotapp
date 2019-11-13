@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import styled from 'styled-components';
-import gotService from '../../services/gotService';
+// import gotService from '../../services/gotService';/index.js
 
 const ItemDetailsDiv = styled.div`
   background-color: #fff;
@@ -46,60 +46,40 @@ export {
   Field
 }
 
-export default class ItemDetails extends Component {
+function ItemDetails({getItems, message, children, itemId}) {
+	const [item, updateItem] = useState({});
+	const [loading, updateLoading] = useState(true);
+	const [error, updateError] = useState(false);
+  useEffect(() => {
+    updateItem_old();
+  }, [itemId])
 
-  gotService = new gotService();
+  function onItemLoaded(i) {
+    updateItem(i);
+    updateLoading(false);
+    updateError(false);
+	}
 
-  state = {
-    item: null,
-    loading: true,
-		error: false  
-  }
+	function onError() {
+    updateLoading(false);
+    updateError(true);
+	}
 
-  componentDidMount = () => {
-    this.updateItem();
-  }
-
-  componentDidUpdate = (prevProps) => {
-    if (this.props.itemId !== prevProps.itemId) {
-      this.updateItem();
-    }
-  }
-
-  onItemLoaded = (item) => {
+  function updateItem_old() {
     
-		this.setState({
-			item,
-			loading: false,
-			error: false
-		})
-	}
-
-	onError = () => {
-		this.setState({
-			error: true,
-			loading: false
-		})
-	}
-
-  updateItem = () => {
-    const {getItems} = this.props;
     if (!getItems) {
       return
     }
     
-
-    getItems(this.state.item)
-      .then(this.onItemLoaded)
-      .catch(this.onError);
+    getItems(item)
+      .then(onItemLoaded)
+      .catch(onError);
   }
 
-  render() {
-    if(!this.state.item) {
-      return <BadSpan>{this.props.message}</BadSpan>
+    if(!item) {
+      return <BadSpan>{message}</BadSpan>
     }
     
-    const {error, loading, item} = this.state;
     const {name} = item;
     const view = (
       <>
@@ -107,10 +87,7 @@ export default class ItemDetails extends Component {
 
         <ListGroupFlush>
           {
-            React.Children.map(this.props.children, (child) => {
-              
-              return React.cloneElement(child, {item})
-            })
+            React.Children.map(children, (child) => React.cloneElement(child, {item}))
           }
         </ListGroupFlush>  
       </>
@@ -126,5 +103,6 @@ export default class ItemDetails extends Component {
         {content}
       </ItemDetailsDiv>
     );
-  }
 }
+
+export default ItemDetails;

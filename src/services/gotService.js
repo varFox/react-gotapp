@@ -8,7 +8,6 @@ export default class GotService {
 
     if(!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
-      // return res.status;
     }
     return await res.json();
   }

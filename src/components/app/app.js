@@ -4,7 +4,7 @@ import Header from '../header';
 import RandomChar from '../randomChar';
 import styled from 'styled-components';
 import ErrorMessage from '../errorMessage';
-import {CharacterPage, HousesPage, BooksPage, BooksItem} from '../pages';
+import {CharacterPage, HousesPage, BooksPage, BooksItem, NotFoundPage} from '../pages';
 import gotService from '../../services/gotService';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
@@ -65,7 +65,7 @@ export default class App extends Component {
 								{viewChar}
 							</Col>
 						</Row>
-
+						
 						<Route path='/characters' component={CharacterPage}/>
 						<Route path='/houses' component={HousesPage}/>
 						<Route path='/books' exact component={BooksPage}/>
@@ -75,6 +75,7 @@ export default class App extends Component {
 								return <BooksItem bookId={id}/>
 							} 
 						}/>
+						<Route component={NotFoundPage}/>
 					</Container>
 				</div>
 			</Router>

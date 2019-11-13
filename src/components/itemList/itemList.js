@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import styled from 'styled-components';
 import Spinner from '../spinner';
@@ -7,52 +7,45 @@ import Spinner from '../spinner';
 const LGroupItem = styled(ListGroupItem)`
   cursor: pointer;
 `
-export default class ItemList extends Component {
 
-  state = {
-    itemList: null
-  }
+function ItemList({getData, onItemSelected, renderItem}) {
 
-  componentDidMount() {
-    const {getData} = this.props;
+  const [itemList, updateList] = useState([]);
+
+  useEffect(() => {
     getData()
-      .then((itemList) => {
-        this.setState({
-          itemList
-        });
-      });
-  }
+      .then((data) => {
+        updateList(data)
+      })
+  }, [])
 
-  renderItems(arr) {
+  function renderItems(arr) {
     
     return arr.map((item) => {
       const {id} = item;
-      const label = this.props.renderItem(item);
+      const label = renderItem(item);
 
       return (
         <LGroupItem 
           key={id}
-          onClick={() => this.props.onItemSelected(id)}>
+          onClick={() => onItemSelected(id)}>
           {label}
         </LGroupItem>
       )
     })
   }
 
-  render() {
-
-    const {itemList} = this.state;
-
-    if(!itemList) {
-      return <Spinner/>
-    }
-
-    const items = this.renderItems(itemList);
-
-    return (
-      <ListGroup>
-        {items}
-      </ListGroup>
-    );
+  if(!itemList) {
+    return <Spinner/>
   }
+
+  const items = renderItems(itemList);
+
+  return (
+    <ListGroup>
+      {items}
+    </ListGroup>
+  );
 }
+
+export default ItemList;
